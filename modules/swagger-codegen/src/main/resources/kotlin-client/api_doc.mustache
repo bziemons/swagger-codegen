@@ -12,7 +12,7 @@ Method | HTTP request | Description
 {{#operation}}
 <a name="{{operationId}}"></a>
 # **{{operationId}}**
-> {{#returnType}}{{returnType}} {{/returnType}}{{operationId}}({{#allParams}}{{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+> {{#returnType}}{{returnType}} {{/returnType}}{{operationId}}({{#each allParams}}{{{paramName}}}{{#unless @last}}, {{/unless}}{{/each}})
 
 {{summary}}{{#notes}}
 
@@ -30,7 +30,7 @@ val apiInstance = {{{classname}}}()
 val {{{paramName}}} : {{{dataType}}} = {{{example}}} // {{{dataType}}} | {{{description}}}
 {{/allParams}}
 try {
-    {{#returnType}}val result : {{{returnType}}} = {{/returnType}}apiInstance.{{{operationId}}}({{#allParams}}{{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}}){{#returnType}}
+    {{#returnType}}val result : {{{returnType}}} = {{/returnType}}apiInstance.{{{operationId}}}({{#each allParams}}{{{paramName}}}{{#unless @last}}, {{/unless}}{{/each}}){{#returnType}}
     println(result){{/returnType}}
 } catch (e: ClientException) {
     println("4xx response calling {{{classname}}}#{{{operationId}}}")
@@ -42,11 +42,11 @@ try {
 ```
 
 ### Parameters
-{{^allParams}}This endpoint does not need any parameter.{{/allParams}}{{#allParams}}{{#-last}}
+{{#each allParams}}{{#if @first}}
 Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------{{/-last}}{{/allParams}}
-{{#allParams}} **{{paramName}}** | {{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isFile}}**{{dataType}}**{{/isFile}}{{^isFile}}{{#generateModelDocs}}[**{{dataType}}**]({{baseType}}.md){{/generateModelDocs}}{{^generateModelDocs}}**{{dataType}}**{{/generateModelDocs}}{{/isFile}}{{/isPrimitiveType}}| {{description}} |{{^required}} [optional]{{/required}}{{#defaultValue}} [default to {{defaultValue}}]{{/defaultValue}}{{#allowableValues}} [enum: {{#values}}{{{.}}}{{^-last}}, {{/-last}}{{/values}}]{{/allowableValues}}
-{{/allParams}}
+------------- | ------------- | ------------- | -------------{{/if}}
+**{{paramName}}** | {{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isFile}}**{{dataType}}**{{/isFile}}{{^isFile}}{{#generateModelDocs}}[**{{dataType}}**]({{baseType}}.md){{/generateModelDocs}}{{^generateModelDocs}}**{{dataType}}**{{/generateModelDocs}}{{/isFile}}{{/isPrimitiveType}}| {{description}} |{{^required}} [optional]{{/required}}{{#defaultValue}} [default to {{defaultValue}}]{{/defaultValue}}{{#allowableValues}} [enum: {{#each values}}{{{.}}}{{#unless @last}}, {{/unless}}{{/each}}]{{/allowableValues}}
+{{else}}This endpoint does not need any parameter.{{/each}}
 
 ### Return type
 
@@ -54,12 +54,12 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-{{^authMethods}}No authorization required{{/authMethods}}{{#authMethods}}[{{name}}](../README.md#{{name}}){{^-last}}, {{/-last}}{{/authMethods}}
+{{#each authMethods}}[{{name}}](../README.md#{{name}}){{#unless @last}}, {{/unless}}{{else}}No authorization required{{/each}}
 
 ### HTTP request headers
 
- - **Content-Type**: {{#consumes}}{{{mediaType}}}{{#hasMore}}, {{/hasMore}}{{/consumes}}{{^consumes}}Not defined{{/consumes}}
- - **Accept**: {{#produces}}{{{mediaType}}}{{#hasMore}}, {{/hasMore}}{{/produces}}{{^produces}}Not defined{{/produces}}
+ - **Content-Type**: {{#each consumes}}{{{mediaType}}}{{#unless @last}}, {{/unless}}{{else}}Not defined{{/each}}
+ - **Accept**: {{#each produces}}{{{mediaType}}}{{#unless @last}}, {{/unless}}{{else}}Not defined{{/each}}
 
 {{/operation}}
 {{/operations}}
